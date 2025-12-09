@@ -19,12 +19,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
         android:name=".RegistroActivity"
         android:exported="false"
-        android:screenOrientation="portrait"/>
+        android:screenOrientation="portrait" />
         <activity android:name=".CitasActivity" android:exported="false"/>
         <activity android:name=".ListaCitasActivity" android:exported="false"/>
-
+        <activity
+            android:name=".InicioActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

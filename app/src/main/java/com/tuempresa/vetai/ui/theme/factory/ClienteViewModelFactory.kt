@@ -1,0 +1,17 @@
+package com.tuempresa.vetai.ui.theme.factory
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import com.tuempresa.vetai.ui.theme.repositorios.ClienteRepository
+import com.tuempresa.vetai.ui.theme.viewmodels.ClienteViewModel
+
+class ClienteViewModelFactory(private val repository: ClienteRepository) : ViewModelProvider.Factory {
+
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(ClienteViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return ClienteViewModel(repository) as T
+        }
+        throw IllegalArgumentException("ViewModel no reconocido")
+    }
+}

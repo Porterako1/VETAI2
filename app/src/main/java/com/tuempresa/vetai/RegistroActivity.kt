@@ -2,6 +2,7 @@ package com.tuempresa.vetai
 
 
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Patterns
 import android.widget.Button
@@ -9,9 +10,15 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.textfield.TextInputEditText
+import com.tuempresa.vetai.ui.theme.AppDatabase
 import com.tuempresa.vetai.ui.theme.Usuario
 import com.tuempresa.vetai.ui.theme.UsuariosManager
+import com.tuempresa.vetai.ui.theme.entidades.Cliente
+import com.tuempresa.vetai.ui.theme.factory.ClienteViewModelFactory
+import com.tuempresa.vetai.ui.theme.repositorios.ClienteRepository
+import com.tuempresa.vetai.ui.theme.viewmodels.ClienteViewModel
 
 class RegistroActivity : AppCompatActivity() {
 
@@ -24,6 +31,7 @@ class RegistroActivity : AppCompatActivity() {
     private lateinit var etConfirmar: TextInputEditText
     private lateinit var btnRegistrarse: Button
     private lateinit var tvYaTienesCuenta: TextView
+    private lateinit var clienteViewModel: ClienteViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +39,11 @@ class RegistroActivity : AppCompatActivity() {
 
         // Ocultar la barra de acción
         supportActionBar?.hide()
+
+        val db = AppDatabase.getDatabase(this)
+        val repo = ClienteRepository(db)
+        val factory = ClienteViewModelFactory(repo)
+        clienteViewModel = ViewModelProvider(this, factory)[ClienteViewModel::class.java]
 
         // Inicializar vistas
         btnBack = findViewById(R.id.btnBack)
@@ -113,32 +126,26 @@ class RegistroActivity : AppCompatActivity() {
                 return
             }
         }
-        // Crear objeto Usuario
-        val nuevoUsuario = Usuario(
-            nombre = nombre,
-            apellidos = apellidos,
-            email = email,
-            contrasena = contrasena
-        )
+        clienteViewModel.existeEmail(email).observe(this) { existente ->
+            if (existente != null) {
+                etEmail.error = "Este correo ya está registrado"
+                etEmail.requestFocus()
+                return@observe
+            }
 
-        // Intentar registrar
-        val registroExitoso = UsuariosManager.registrarUsuario(this, nuevoUsuario)
+            // Si NO existe → insertar
+            val cliente = Cliente(
+                Nombre = nombre,
+                Apellidos = apellidos,
+                Telefono = "Sin teléfono",
+                Usuario = email,
+                Contrasena = contrasena
+            )
 
-        if (registroExitoso) {
-            Toast.makeText(
-                this,
-                "¡Cuenta creada exitosamente! Ya puedes iniciar sesión",
-                Toast.LENGTH_LONG
-            ).show()
-            finish() // Volver al login
-        } else {
-            Toast.makeText(
-                this,
-                "Este correo ya está registrado",
-                Toast.LENGTH_SHORT
-            ).show()
-            etEmail.error = "Correo ya registrado"
-            etEmail.requestFocus()
+            clienteViewModel.insertar(cliente)
+
+            Toast.makeText(this, "Cuenta creada correctamente", Toast.LENGTH_LONG).show()
+            finish()
         }
     }
 }
