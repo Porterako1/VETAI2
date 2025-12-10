@@ -20,6 +20,7 @@ import com.tuempresa.vetai.ui.theme.entidades.*
 abstract class AppDatabase : RoomDatabase() {
     abstract fun clienteDao(): ClienteDao
     abstract fun mascotaDao(): MascotaDao
+
     abstract fun veterinarioDao(): VeterinarioDao
     abstract fun citasDao(): CitasDao
     abstract fun tratamientoDao(): TratamientoDao
@@ -37,6 +38,7 @@ abstract class AppDatabase : RoomDatabase() {
                 INSTANCE = instance
                 instance
             }
+
         }
     }
 }

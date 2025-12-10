@@ -16,7 +16,8 @@ class InicioActivity : AppCompatActivity(){
 
         // Navegacion a actividad mis mascotas
         cardMisMascotas.setOnClickListener {
-            //startActivity(Intent(this, MisMascotasActivity::class.java))
+
+            startActivity(Intent(this, RegistroMascotaActivity::class.java))
         }
 
         cardCitas.setOnClickListener {

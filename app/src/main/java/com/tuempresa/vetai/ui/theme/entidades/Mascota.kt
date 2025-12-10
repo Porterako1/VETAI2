@@ -1,26 +1,31 @@
 package com.tuempresa.vetai.ui.theme.entidades
 
-import androidx.room.*
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import androidx.room.ForeignKey
 
 @Entity(
-    tableName = "Mascota",
+    tableName = "mascotas",
     foreignKeys = [
         ForeignKey(
             entity = Cliente::class,
             parentColumns = ["ID_Cliente"],
-            childColumns = ["ID_Cliente"],
+            childColumns = ["clienteId"],
             onDelete = ForeignKey.CASCADE
         )
-    ],
-    indices = [Index("ID_Cliente")]
+    ]
 )
 data class Mascota(
     @PrimaryKey(autoGenerate = true)
-    val ID_Mascota: Int = 0,
-    val ID_Cliente: Int,
-    val Nombre: String,
-    val Especie: String,
-    val Raza: String,
-    val Edad: Int,
-    val Sexo: String
+    val id: Int = 0,
+    val nombre: String,
+    val raza: String,
+    val edad: Int, // en años
+    val peso: Double, // en kilogramos
+    val color: String,
+    val sexo: String, // "Macho" o "Hembra"
+    val especie: String, // "Perro", "Gato", etc.
+    val esterilizado: Boolean = false,
+    val clienteId: Int, // Relación con el cliente dueño
+    val fechaRegistro: Long = System.currentTimeMillis()
 )

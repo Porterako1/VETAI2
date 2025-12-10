@@ -29,6 +29,11 @@
             android:name=".InicioActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".RegistroMascotaActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+
     </application>
 
 </manifest>
