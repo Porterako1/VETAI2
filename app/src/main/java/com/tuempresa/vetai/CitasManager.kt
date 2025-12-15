@@ -1,69 +1,77 @@
 package com.tuempresa.vetai
 
-import com.tuempresa.vetai.ui.theme.Cita
-import kotlin.collections.removeAll
-
-
-
-
 import android.content.Context
-import android.content.SharedPreferences
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+import com.tuempresa.vetai.ui.theme.AppDatabase
+import com.tuempresa.vetai.ui.theme.entidades.Citas
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 object CitasManager {
 
-    private const val PREFS_NAME = "VetaiPrefs"
-    private const val KEY_CITAS = "citas"
-
-    private fun getPreferences(context: Context): SharedPreferences {
-        return context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-    }
+    private fun getDatabase(context: Context) = AppDatabase.getDatabase(context)
 
     // Obtener todas las citas
-    fun obtenerCitas(context: Context): MutableList<Cita> {
-        val prefs = getPreferences(context)
-        val citasJson = prefs.getString(KEY_CITAS, null)
-
-        return if (citasJson != null) {
-            val type = object : TypeToken<MutableList<Cita>>() {}.type
-            Gson().fromJson(citasJson, type)
-        } else {
-            mutableListOf()
+    fun obtenerCitas(context: Context, callback: (List<Citas>) -> Unit) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val citas = getDatabase(context).citasDao().obtenerTodasLasCitas().firstOrNull() ?: emptyList()
+            withContext(Dispatchers.Main) {
+                callback(citas)
+            }
         }
     }
 
-    // Guardar lista de citas
-    private fun guardarCitas(context: Context, citas: MutableList<Cita>) {
-        val prefs = getPreferences(context)
-        val citasJson = Gson().toJson(citas)
-        prefs.edit().putString(KEY_CITAS, citasJson).apply()
-    }
-
     // Agregar nueva cita
-    fun agregarCita(context: Context, cita: Cita) {
-        val citas = obtenerCitas(context)
-        citas.add(cita)
-        guardarCitas(context, citas)
+    fun agregarCita(context: Context, cita: Citas, callback: (() -> Unit)? = null) {
+        CoroutineScope(Dispatchers.IO).launch {
+            getDatabase(context).citasDao().insertarCita(cita)
+            withContext(Dispatchers.Main) {
+                callback?.invoke()
+            }
+        }
     }
 
     // Eliminar cita por ID
-    fun eliminarCita(context: Context, citaId: String) {
-        val citas = obtenerCitas(context)
-        citas.removeAll { it.id == citaId }
-        guardarCitas(context, citas)
+    fun eliminarCita(context: Context, citaId: Int, callback: (() -> Unit)? = null) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val cita = getDatabase(context).citasDao().obtenerCitaPorId(citaId)
+            cita?.let {
+                getDatabase(context).citasDao().eliminarCita(it)
+            }
+            withContext(Dispatchers.Main) {
+                callback?.invoke()
+            }
+        }
     }
 
     // Cancelar cita (cambiar estado)
-    fun cancelarCita(context: Context, citaId: String) {
-        val citas = obtenerCitas(context)
-        val cita = citas.find { it.id == citaId }
-        cita?.estado = "Cancelada"
-        guardarCitas(context, citas)
+    fun cancelarCita(context: Context, citaId: Int, callback: (() -> Unit)? = null) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val cita = getDatabase(context).citasDao().obtenerCitaPorId(citaId)
+            cita?.let {
+                val citaActualizada = it.copy(estado = "Cancelada")
+                getDatabase(context).citasDao().actualizarCita(citaActualizada)
+            }
+            withContext(Dispatchers.Main) {
+                callback?.invoke()
+            }
+        }
     }
 
-    // Obtener citas activas (no canceladas)
-    fun obtenerCitasActivas(context: Context): List<Cita> {
-        return obtenerCitas(context).filter { it.estado != "Cancelada" }
+    // Obtener citas por estado
+    fun obtenerCitasPorEstado(context: Context, estado: String, callback: (List<Citas>) -> Unit) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val citas = getDatabase(context).citasDao().obtenerCitasPorEstado(estado).firstOrNull() ?: emptyList()
+            withContext(Dispatchers.Main) {
+                callback(citas)
+            }
+        }
+    }
+
+    // Obtener citas activas
+    fun obtenerCitasActivas(context: Context, callback: (List<Citas>) -> Unit) {
+        obtenerCitasPorEstado(context, "Activa", callback)
     }
 }

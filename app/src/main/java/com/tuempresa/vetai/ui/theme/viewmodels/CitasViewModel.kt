@@ -1,31 +1,73 @@
 package com.tuempresa.vetai.ui.theme.viewmodels
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.liveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.tuempresa.vetai.ui.theme.entidades.Citas
 import com.tuempresa.vetai.ui.theme.repositorios.CitasRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
-class CitasViewModel(private val repository: CitasRepository) : BaseViewModel() {
+class CitasViewModel(private val repository: CitasRepository) : ViewModel() {
 
-    val listaCitas = MutableLiveData<List<Citas>>()
+    private val _listaCitas = MutableStateFlow<List<Citas>>(emptyList())
+    val listaCitas: StateFlow<List<Citas>> = _listaCitas.asStateFlow()
 
-    fun cargarCitas(idMascota: Int) = launch {
-        listaCitas.postValue(repository.obtenerCitasDeMascota(idMascota))
+    init {
+        cargarTodasLasCitas()
     }
 
-    fun insertar(cita: Citas) = launch {
-        repository.insertar(cita)
-        cargarCitas(cita.ID_Mascota)
+    private fun cargarTodasLasCitas() {
+        viewModelScope.launch {
+            repository.obtenerTodasLasCitas().collect { citas ->
+                _listaCitas.value = citas
+            }
+        }
     }
 
-    fun actualizar(cita: Citas) = launch {
-        repository.actualizar(cita)
-        cargarCitas(cita.ID_Mascota)
+    fun cargarCitasPorMascota(idMascota: Int) {
+        viewModelScope.launch {
+            repository.obtenerCitasPorMascota(idMascota).collect { citas ->
+                _listaCitas.value = citas
+            }
+        }
     }
 
-    fun eliminar(cita: Citas) = launch {
-        repository.eliminar(cita)
-        cargarCitas(cita.ID_Mascota)
+    fun insertarCita(cita: Citas) {
+        viewModelScope.launch {
+            repository.insertar(cita)
+            cargarTodasLasCitas()
+        }
     }
 
+    fun actualizarCita(cita: Citas) {
+        viewModelScope.launch {
+            repository.actualizar(cita)
+            cargarTodasLasCitas()
+        }
+    }
+
+    fun eliminarCita(cita: Citas) {
+        viewModelScope.launch {
+            repository.eliminar(cita)
+            cargarTodasLasCitas()
+        }
+    }
+
+    fun cargarCitasPorEstado(estado: String) {
+        viewModelScope.launch {
+            repository.obtenerCitasPorEstado(estado).collect { citas ->
+                _listaCitas.value = citas
+            }
+        }
+    }
+
+    fun cargarCitasPorFecha(fecha: String) {
+        viewModelScope.launch {
+            repository.obtenerCitasPorFecha(fecha).collect { citas ->
+                _listaCitas.value = citas
+            }
+        }
+    }
 }

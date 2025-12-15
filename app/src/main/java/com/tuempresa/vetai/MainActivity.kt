@@ -5,6 +5,24 @@ import android.os.Bundle
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
@@ -12,8 +30,6 @@ import com.tuempresa.vetai.ui.theme.AppDatabase
 import com.tuempresa.vetai.ui.theme.factory.ClienteViewModelFactory
 import com.tuempresa.vetai.ui.theme.repositorios.ClienteRepository
 import com.tuempresa.vetai.ui.theme.viewmodels.ClienteViewModel
-import com.tuempresa.vetai.ui.theme.entidades.Cliente
-import com.tuempresa.vetai.ui.theme.dao.ClienteDao
 
 class MainActivity : AppCompatActivity() {
 
@@ -68,8 +84,14 @@ class MainActivity : AppCompatActivity() {
             else -> {
                 clienteViewModel.login(usuario, contrasena).observe(this) { user ->
                     if (user != null) {
-                        Toast.makeText(this, "¡Bienvenido, $usuario!", Toast.LENGTH_SHORT).show()
-                        startActivity(Intent(this, InicioActivity::class.java))
+                        // Guardar ID del cliente en SharedPreferences
+                        guardarSesion(user.ID_Cliente, user.Nombre)
+
+                        Toast.makeText(this, "¡Bienvenido, ${user.Nombre}!", Toast.LENGTH_SHORT).show()
+
+                        val intent = Intent(this, InicioActivity::class.java)
+                        startActivity(intent)
+                        finish()
                     } else {
                         Toast.makeText(this, "Usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show()
                     }
@@ -77,5 +99,16 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+    private fun guardarSesion(clienteId: Int, nombreCliente: String) {
+        val prefs = getSharedPreferences("VetaiPrefs", MODE_PRIVATE)
+        prefs.edit().apply {
+            putInt("cliente_id", clienteId)
+            putString("cliente_nombre", nombreCliente)
+            putBoolean("sesion_activa", true)
+            apply()
+        }
+    }
 }
+
 

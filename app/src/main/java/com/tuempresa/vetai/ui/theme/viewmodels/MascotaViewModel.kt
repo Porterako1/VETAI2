@@ -1,95 +1,85 @@
-package com.tuempresa.vetai.ui.theme.viewmodels
+package com.tuempresa.vetai.ui.theme.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.tuempresa.vetai.ui.theme.AppDatabase
 import com.tuempresa.vetai.ui.theme.entidades.Mascota
 import com.tuempresa.vetai.ui.theme.repositorios.MascotaRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class MascotaViewModel(private val repository: MascotaRepository) : ViewModel() {
+class MascotaViewModel(application: Application) : AndroidViewModel(application) {
 
-    // Lista observable de mascotas
-    private val _listaMascotas = MutableLiveData<List<Mascota>>()
-    val listaMascotas: LiveData<List<Mascota>> = _listaMascotas
+    private val repository: MascotaRepository
 
-    // Para manejar errores
-    private val _errorMessage = MutableLiveData<String>()
-    val errorMessage: LiveData<String> = _errorMessage
+    private val _mascotas = MutableStateFlow<List<Mascota>>(emptyList())
+    val mascotas: StateFlow<List<Mascota>> = _mascotas.asStateFlow()
 
-    // Para manejar operaciones exitosas
-    private val _successMessage = MutableLiveData<String>()
-    val successMessage: LiveData<String> = _successMessage
+    private val _mensaje = MutableStateFlow<String?>(null)
+    val mensaje: StateFlow<String?> = _mensaje.asStateFlow()
 
-    // Cargar mascotas de un cliente
-    fun cargarMascotas(idCliente: Int) {
+    init {
+        val mascotaDao = AppDatabase.getDatabase(application).mascotaDao()
+        repository = MascotaRepository(mascotaDao)
+
         viewModelScope.launch {
-            try {
-                val mascotas = repository.obtenerMascotasPorCliente(idCliente)
-                _listaMascotas.value = mascotas as List<Mascota>?
-            } catch (e: Exception) {
-                _errorMessage.value = "Error al cargar mascotas: ${e.message}"
+            repository.todasLasMascotas.collect { listaMascotas ->
+                _mascotas.value = listaMascotas
             }
         }
     }
 
-    // Insertar una nueva mascota
-    fun insertar(mascota: Mascota, idCliente: Int) {
+    fun registrarMascota(
+        nombre: String,
+        especie: String,
+        raza: String,
+        edad: String,
+        peso: String,
+        sexo: String,
+        observaciones: String
+    ) {
         viewModelScope.launch {
             try {
-                repository.insertar(mascota)
-                _successMessage.value = "Mascota registrada exitosamente"
-                cargarMascotas(idCliente) // Recargar la lista
+                if (nombre.isBlank() || especie.isBlank()) {
+                    _mensaje.value = "El nombre y la especie son obligatorios"
+                    return@launch
+                }
+
+                val edadInt = edad.toIntOrNull() ?: 0
+                val pesoDouble = peso.toDoubleOrNull() ?: 0.0
+
+                val nuevaMascota = Mascota(
+                    nombre = nombre.trim(),
+                    especie = especie.trim(),
+                    raza = raza.trim(),
+                    edad = edadInt,
+                    peso = pesoDouble,
+                    sexo = sexo,
+                    observaciones = observaciones.trim()
+                )
+
+                repository.insertarMascota(nuevaMascota)
+                _mensaje.value = "Mascota registrada exitosamente"
             } catch (e: Exception) {
-                _errorMessage.value = "Error al registrar mascota: ${e.message}"
+                _mensaje.value = "Error al registrar: ${e.message}"
             }
         }
     }
 
-    // Insertar con callback (para compatibilidad con tu código actual)
-    fun insertar(mascota: Mascota, idCliente: Int, callback: (Boolean) -> Unit) {
-        viewModelScope.launch {
-            try {
-                repository.insertar(mascota)
-                _successMessage.value = "Mascota registrada exitosamente"
-                cargarMascotas(idCliente)
-                callback(true)
-            } catch (e: Exception) {
-                _errorMessage.value = "Error al registrar mascota: ${e.message}"
-                callback(false)
-            }
-        }
+    fun limpiarMensaje() {
+        _mensaje.value = null
     }
 
-    // Actualizar mascota existente
-    fun actualizar(mascota: Mascota, idCliente: Int) {
+    fun eliminarMascota(mascota: Mascota) {
         viewModelScope.launch {
             try {
-                repository.actualizar(mascota)
-                _successMessage.value = "Mascota actualizada exitosamente"
-                cargarMascotas(idCliente)
+                repository.eliminarMascota(mascota)
             } catch (e: Exception) {
-                _errorMessage.value = "Error al actualizar mascota: ${e.message}"
+                _mensaje.value = "Error al eliminar: ${e.message}"
             }
         }
-    }
-
-    // Eliminar mascota
-    fun eliminar(mascota: Mascota, idCliente: Int) {
-        viewModelScope.launch {
-            try {
-                repository.eliminar(mascota)
-                _successMessage.value = "Mascota eliminada exitosamente"
-                cargarMascotas(idCliente)
-            } catch (e: Exception) {
-                _errorMessage.value = "Error al eliminar mascota: ${e.message}"
-            }
-        }
-    }
-
-    // Obtener una mascota por ID
-    fun obtenerMascotaPorId(id: Int): Mascota? {
-        return _listaMascotas.value?.find { it.id == id }
     }
 }

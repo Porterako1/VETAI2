@@ -38,7 +38,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <!-- Sección -->
+            <!-- Sección intro -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -49,7 +49,7 @@
                 android:letterSpacing="0.1"
                 android:layout_marginBottom="24dp" />
 
-            <!-- Mis Mascotas -->
+            <!-- Mis Mascotas (Tarjeta) -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardMisMascotas"
                 android:layout_width="match_parent"
@@ -218,6 +218,12 @@
                         app:tint="@color/primary_blue"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
+
+
+
+
+
+
 
         </LinearLayout>
     </ScrollView>

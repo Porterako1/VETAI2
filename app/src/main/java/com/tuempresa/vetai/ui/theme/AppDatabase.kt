@@ -1,5 +1,6 @@
 package com.tuempresa.vetai.ui.theme
 
+import com.tuempresa.vetai.ui.theme.dao.MascotaDao
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
@@ -14,7 +15,7 @@ import com.tuempresa.vetai.ui.theme.entidades.*
         Veterinario::class,
         Tratamiento::class
                ],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {

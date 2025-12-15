@@ -1,12 +1,15 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <style name="Base.Theme.VETAI" parent="Theme.Material3.Light.NoActionBar">
-        <item name="colorPrimary">@color/primary_blue</item>
         <item name="colorPrimaryVariant">@color/primary_blue</item>
-        <item name="colorOnPrimary">@color/white</item>
-        <item name="colorSecondary">@color/accent_green</item>
         <item name="colorSecondaryVariant">@color/accent_green</item>
-        <item name="colorOnSecondary">@color/white</item>
         <item name="android:statusBarColor">@color/primary_blue</item>
+        <item name="colorPrimary">@color/md_theme_light_primary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_light_primary_container</item>
+        <item name="colorOnPrimary">@color/md_theme_light_onPrimary</item>
+        <item name="colorSecondary">@color/md_theme_light_secondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_light_secondary_container</item>
+        <item name="colorOnSecondary">@color/md_theme_light_onSecondary</item>
+        <item name="android:windowBackground">@color/md_theme_light_background</item>
     </style>
 
     <style name="Theme.VETAI" parent="Base.Theme.VETAI" />

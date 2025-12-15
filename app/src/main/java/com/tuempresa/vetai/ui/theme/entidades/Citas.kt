@@ -1,33 +1,38 @@
 package com.tuempresa.vetai.ui.theme.entidades
 
-import androidx.room.*
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import androidx.room.ForeignKey
+import androidx.room.Index
 
 @Entity(
-    tableName = "Citas",
+    tableName = "citas",
     foreignKeys = [
         ForeignKey(
             entity = Mascota::class,
             parentColumns = ["id"],
-            childColumns = ["ID_Mascota"],
+            childColumns = ["idMascota"],
             onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
             entity = Veterinario::class,
             parentColumns = ["ID_Veterinario"],
-            childColumns = ["ID_Veterinario"],
-            onDelete = ForeignKey.CASCADE
+            childColumns = ["idVeterinario"],
+            onDelete = ForeignKey.SET_NULL
         )
     ],
-    indices = [Index("ID_Mascota"), Index("ID_Veterinario")]
+    indices = [
+        Index(value = ["idMascota"]),
+        Index(value = ["idVeterinario"])
+    ]
 )
-
 data class Citas(
     @PrimaryKey(autoGenerate = true)
     val ID_Cita: Int = 0,
-    val ID_Mascota: Int,
-    val ID_Veterinario: Int,
-    val Fecha: String,
-    val Hora: String,
-    val Motivo: String,
-    val Estado: String
+    val idMascota: Int = 1,
+    val idVeterinario: Int? = 1,  // Nullable porque tiene SET_NULL
+    val fecha: String,
+    val hora: String,
+    val motivo: String,
+    var estado: String = "Activa"
 )

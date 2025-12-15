@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="12dp"
+    android:layout_margin="8dp"
     app:cardCornerRadius="12dp"
     app:cardElevation="4dp"
     app:cardBackgroundColor="@color/white">
@@ -12,71 +12,73 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:gravity="center_vertical">
 
-        <!-- Indicador de color lateral -->
-        <View
-            android:id="@+id/viewIndicator"
-            android:layout_width="4dp"
-            android:layout_height="match_parent"
-            android:background="@color/accent_green"
-            android:layout_marginEnd="16dp"/>
+        <!-- Icono de calendario -->
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_calendar"
+            android:padding="8dp"
+            app:tint="@color/primary_blue"/>
 
         <!-- Contenido de la cita -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginStart="12dp">
 
             <TextView
-                android:id="@+id/tvFecha"
+                android:id="@+id/tvMotivoCita"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="15 de Diciembre, 2025"
-                android:textColor="@color/primary_blue"
-                android:textSize="16sp"
-                android:textStyle="bold"/>
-
-            <TextView
-                android:id="@+id/tvHora"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="10:30 AM"
+                android:text="Consulta General"
                 android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:id="@+id/tvFechaCita"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="15/12/2025"
+                android:textColor="@color/gray"
                 android:textSize="14sp"
                 android:layout_marginTop="4dp"/>
 
             <TextView
-                android:id="@+id/tvMotivo"
+                android:id="@+id/tvHoraCita"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Consulta General"
+                android:text="10:00 AM"
                 android:textColor="@color/gray"
-                android:textSize="13sp"
-                android:layout_marginTop="4dp"/>
+                android:textSize="14sp"/>
 
             <TextView
-                android:id="@+id/tvEstado"
+                android:id="@+id/tvEstadoCita"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Confirmada"
+                android:text="Activa"
                 android:textColor="@color/accent_green"
-                android:textSize="12sp"
                 android:textStyle="bold"
-                android:layout_marginTop="8dp"/>
+                android:textSize="12sp"
+                android:layout_marginTop="4dp"/>
         </LinearLayout>
 
-        <!-- Botón eliminar -->
+        <!-- Botón Eliminar -->
         <ImageView
-            android:id="@+id/btnEliminar"
+            android:id="@+id/btnEliminarCita"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@drawable/ic_delete"
+            android:src="@android:drawable/ic_menu_delete"
             android:padding="8dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            app:tint="#E53935"
+            app:tint="@android:color/holo_red_dark"
             android:contentDescription="Eliminar cita"/>
+
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>

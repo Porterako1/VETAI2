@@ -1,34 +1,30 @@
 package com.tuempresa.vetai.ui.theme.repositorios
 
-import androidx.lifecycle.LiveData
-import com.tuempresa.vetai.ui.theme.AppDatabase
+import com.tuempresa.vetai.ui.theme.dao.MascotaDao
 import com.tuempresa.vetai.ui.theme.entidades.Mascota
+import kotlinx.coroutines.flow.Flow
 
-class MascotaRepository(private val db: AppDatabase) {
+class MascotaRepository(private val mascotaDao: MascotaDao) {
 
-    private val mascotaDao = db.mascotaDao()
+    val todasLasMascotas: Flow<List<Mascota>> = mascotaDao.obtenerTodasMascotas()
 
-    suspend fun insertar(mascota: Mascota): Long {
-        return mascotaDao.insertar(mascota)
+    suspend fun insertarMascota(mascota: Mascota): Long {
+        return mascotaDao.insertarMascota(mascota)
     }
 
-    suspend fun actualizar(mascota: Mascota) {
-        mascotaDao.actualizar(mascota)
+    suspend fun actualizarMascota(mascota: Mascota) {
+        mascotaDao.actualizarMascota(mascota)
     }
 
-    suspend fun eliminar(mascota: Mascota) {
-        mascotaDao.eliminar(mascota)
+    suspend fun eliminarMascota(mascota: Mascota) {
+        mascotaDao.eliminarMascota(mascota)
     }
 
-    fun obtenerMascotasPorCliente(clienteId: Int): LiveData<List<Mascota>> {
-        return mascotaDao.obtenerMascotasPorCliente(clienteId)
-    }
-
-    fun obtenerMascotaPorId(id: Int): LiveData<Mascota> {
+    suspend fun obtenerMascotaPorId(id: Int): Mascota? {
         return mascotaDao.obtenerMascotaPorId(id)
     }
 
-    fun obtenerTodasLasMascotas(): LiveData<List<Mascota>> {
-        return mascotaDao.obtenerTodasLasMascotas()
+    fun obtenerMascotasPorCliente(idCliente: Int): Flow<List<Mascota>> {
+        return mascotaDao.obtenerMascotasPorCliente(idCliente)
     }
 }

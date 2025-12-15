@@ -5,28 +5,35 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 
-class InicioActivity : AppCompatActivity(){
+class InicioActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_inicio)
 
+        // Ocultar la barra de acción si existe
+        supportActionBar?.hide()
+
+        // Obtener referencias a las tarjetas
         val cardMisMascotas = findViewById<CardView>(R.id.cardMisMascotas)
         val cardCitas = findViewById<CardView>(R.id.cardCitas)
         val cardMiPerfil = findViewById<CardView>(R.id.cardMiPerfil)
 
-        // Navegacion a actividad mis mascotas
+        // Click en "Mis Mascotas" - Abre la lista de mascotas
         cardMisMascotas.setOnClickListener {
-
-            startActivity(Intent(this, RegistroMascotaActivity::class.java))
+            val intent = Intent(this, ListaMascotasActivity::class.java)
+            startActivity(intent)
         }
 
+        // Click en "Mis Citas" - Abre el menú de citas ✅ CORREGIDO
         cardCitas.setOnClickListener {
-            startActivity(Intent(this, CitasActivity::class.java))
+            val intent = Intent(this, CitasActivity::class.java)
+            startActivity(intent)
         }
 
-        // Navegacion a actividad mi perfil
+        // Click en "Mi Perfil" - Puedes agregar tu activity de perfil aquí
         cardMiPerfil.setOnClickListener {
-            //startActivity(Intent(this, PerfilActivity::class.java))
+            // TODO: Crear PerfilActivity si lo necesitas
         }
     }
 }

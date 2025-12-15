@@ -35,6 +35,37 @@
                 android:textSize="14sp"
                 android:layout_marginBottom="24dp"/>
 
+            <!-- Campo Mascota -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MASCOTA"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="12sp"
+                android:letterSpacing="0.1"
+                android:layout_marginBottom="8dp"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilMascota"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:boxBackgroundColor="@color/white"
+                app:boxStrokeColor="@color/accent_green"
+                app:boxStrokeWidth="2dp"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+
+                <AutoCompleteTextView
+                    android:id="@+id/actvMascota"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Selecciona la mascota"
+                    android:inputType="none"
+                    android:textColor="@color/black"
+                    android:padding="12dp"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
             <!-- Campo Fecha -->
             <TextView
                 android:layout_width="wrap_content"
@@ -130,7 +161,7 @@
                     android:id="@+id/actvMotivo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Selecciona el motivo"
+                    android:hint="Selecciona un motivo"
                     android:inputType="none"
                     android:textColor="@color/black"
                     android:padding="12dp"/>
@@ -141,7 +172,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:gravity="end">
+                android:gravity="end"
+                android:layout_marginTop="8dp">
 
                 <Button
                     android:id="@+id/btnCancelar"

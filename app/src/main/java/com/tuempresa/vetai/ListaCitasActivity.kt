@@ -8,8 +8,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tuempresa.vetai.ui.theme.Cita
 import com.tuempresa.vetai.CitasAdapter
+import com.tuempresa.vetai.ui.theme.entidades.Citas
 
 class ListaCitasActivity : AppCompatActivity() {
 
@@ -46,12 +46,18 @@ class ListaCitasActivity : AppCompatActivity() {
     }
 
     private fun cargarCitas() {
-        val citas = if (modo == "CANCELAR") {
-            CitasManager.obtenerCitasActivas(this).toMutableList()
+        if (modo == "CANCELAR") {
+            CitasManager.obtenerCitasActivas(this) { citas ->
+                mostrarCitas(citas.toMutableList())
+            }
         } else {
-            CitasManager.obtenerCitas(this)
+            CitasManager.obtenerCitas(this) { citas ->
+                mostrarCitas(citas.toMutableList())
+            }
         }
+    }
 
+    private fun mostrarCitas(citas: MutableList<Citas>) {
         if (citas.isEmpty()) {
             rvCitas.visibility = View.GONE
             layoutEmpty.visibility = View.VISIBLE
@@ -66,7 +72,7 @@ class ListaCitasActivity : AppCompatActivity() {
         }
     }
 
-    private fun mostrarDialogEliminar(cita: Cita) {
+    private fun mostrarDialogEliminar(cita: Citas) {
         val mensaje = if (modo == "CANCELAR") {
             "¿Estás seguro de que deseas cancelar esta cita?"
         } else {
@@ -78,11 +84,14 @@ class ListaCitasActivity : AppCompatActivity() {
             .setMessage(mensaje)
             .setPositiveButton("Sí") { _, _ ->
                 if (modo == "CANCELAR") {
-                    CitasManager.cancelarCita(this, cita.id)
+                    CitasManager.cancelarCita(this, cita.ID_Cita) {
+                        cargarCitas()
+                    }
                 } else {
-                    CitasManager.eliminarCita(this, cita.id)
+                    CitasManager.eliminarCita(this, cita.ID_Cita) {
+                        cargarCitas()
+                    }
                 }
-                cargarCitas()
             }
             .setNegativeButton("No", null)
             .show()
