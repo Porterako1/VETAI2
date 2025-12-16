@@ -1,10 +1,13 @@
 package com.tuempresa.vetai.ui.theme.repositorios
 
+import androidx.lifecycle.LiveData
 import com.tuempresa.vetai.ui.theme.AppDatabase
 import com.tuempresa.vetai.ui.theme.entidades.Cliente
 
 class ClienteRepository (private val db: AppDatabase) {
     suspend fun obtenerClientes() = db.clienteDao().obtenerClientes()
+
+    fun obtenerClientePorId(id: Int): LiveData<Cliente> = db.clienteDao().obtenerClientePorId(id)
 
     suspend fun insertar(cliente: Cliente) = db.clienteDao().insertar(cliente)
 

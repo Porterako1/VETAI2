@@ -16,6 +16,9 @@ class ClienteViewModel(private val repository: ClienteRepository) : BaseViewMode
         listaClientes.postValue(repository.obtenerClientes())
     }
 
+    fun obtenerClientePorId(id: Int): LiveData<Cliente> =
+        repository.obtenerClientePorId(id)
+
     fun insertar(cliente: Cliente) = launch {
         repository.insertar(cliente)
         cargarClientes()
