@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import com.tuempresa.vetai.ui.perfil.MiPerfilActivity
 
 class InicioActivity : AppCompatActivity() {
 
@@ -34,6 +35,8 @@ class InicioActivity : AppCompatActivity() {
         // Click en "Mi Perfil" - Puedes agregar tu activity de perfil aquí
         cardMiPerfil.setOnClickListener {
             // TODO: Crear PerfilActivity si lo necesitas
+            val intent = Intent(this, MiPerfilActivity::class.java)
+            startActivity(intent)
         }
     }
 }

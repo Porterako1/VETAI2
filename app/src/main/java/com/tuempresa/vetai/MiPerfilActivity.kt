@@ -32,10 +32,11 @@ class MiPerfilActivity : AppCompatActivity() {
         clienteViewModel = ViewModelProvider(this, factory)[ClienteViewModel::class.java]
 
         // Obtener sesión
-        val prefs = getSharedPreferences("sesion", MODE_PRIVATE)
-        val idCliente = prefs.getInt("id_cliente", -1)
+        val prefs = getSharedPreferences("VetaiPrefs", MODE_PRIVATE)
+        val idCliente = prefs.getInt("cliente_id", -1)
 
         if (idCliente == -1) {
+            Toast.makeText(this, "No hay sesión activa", Toast.LENGTH_SHORT).show()
             finish()
             return
         }

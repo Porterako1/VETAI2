@@ -49,6 +49,9 @@
             android:exported="false"
             android:label="Registrar Mascota"
             android:parentActivityName=".ListaMascotasActivity" />
+        <activity
+            android:name=".ui.perfil.MiPerfilActivity"
+            android:exported="false" />
 
     </application>
 
